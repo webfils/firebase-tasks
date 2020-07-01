@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firebase Firestore CRUD con Javascript</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.5.4/dist/css/uikit.min.css">
+</head>
+
+<body>
+    <div class="uk-background-secondary uk-light" uk-height-viewport>
+        <div class="uk-container uk-container-small">
+            <div class="uk-child-width-1-2 uk-grid-small" uk-grid>
+                <div>
+                    <form class="uk-form-stacked" id="task-form">
+                        <div class="uk-margin">
+                            <label class="uk-form-label uk-text-muted" for="task-title">Título de la tarea</label>
+                            <div class="uk-form-controls">
+                                <input class="uk-input" id="task-title" type="text" placeholder="Tarea..">
+                            </div>
+                        </div>
+                        <div class="uk-margin">
+                            <label class="uk-form-label uk-text-muted" for="task-description">Descripción de la tarea</label>
+                            <div class="uk-form-controls">
+                                <textarea class="uk-textarea" rows="4" id="task-description" placeholder="Tarea.."></textarea>
+                            </div>
+                        </div>
+                        <div uk-margin>
+                            <button class="uk-button uk-button-default" id="button-task-form">Guardar</button>
+                        </div>
+                    </form>
+                </div>
+                <div>
+                    <div id="tasks-container" uk-margin></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/uikit@3.5.4/dist/js/uikit.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/uikit@3.5.4/dist/js/uikit-icons.min.js"></script>
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/7.15.5/firebase-app.js"></script>
+
+    <!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+    <script src="https://www.gstatic.com/firebasejs/7.15.5/firebase-firestore.js"></script>
+
+    <script>
+        // Your web app's Firebase configuration
+        var firebaseConfig = {
+            apiKey: "AIzaSyBcelJIZf7av_YNw7QzKyo75zz9hb4O04I",
+            authDomain: "crudjs-fa830.firebaseapp.com",
+            databaseURL: "https://crudjs-fa830.firebaseio.com",
+            projectId: "crudjs-fa830",
+            storageBucket: "crudjs-fa830.appspot.com",
+            messagingSenderId: "248896270492",
+            appId: "1:248896270492:web:354669bc19c48a6300bd59"
+        };
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+    </script>
+    <script src="index.js"></script>
+</body>
+
+</html>
