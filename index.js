@@ -28,8 +28,8 @@ window.addEventListener('DOMContentLoaded', async(e) => {
                     <h3 class="uk-card-title">${task.title}</h3>
                     <p>${task.description}</p>
                     <ul class="uk-iconnav">
-                        <li><a href="#" uk-icon="icon: pencil"></a></li>
-                        <li><a href="#" uk-icon="icon: trash"></a></li>
+                        <li><button class="uk-button uk-button-link uk-button-edit" uk-icon="icon: pencil;"></button></li>
+                        <li><button class="uk-button uk-button-link uk-button-delete" uk-icon="icon: trash;"></button></li>
                     </ul>
                 </div>
             `
