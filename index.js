@@ -20,7 +20,11 @@ window.addEventListener('DOMContentLoaded', async(e) => {
     const querySnapshot = await getTask()
     querySnapshot.forEach(doc => {
         // console.log(doc.data())
-        const task = doc.data()
+        const task = doc.data();
+
+        // Crear propiedad id
+        task.id = doc.id;
+        // console.log(task)
 
         taskContainer.innerHTML +=
             `
@@ -28,7 +32,7 @@ window.addEventListener('DOMContentLoaded', async(e) => {
                     <h3 class="uk-card-title">${task.title}</h3>
                     <p>${task.description}</p>
                     <ul class="uk-iconnav">
-                        <li><button class="uk-button uk-button-link uk-button-edit" data-id="myId" uk-icon="icon: pencil;"></button></li>
+                        <li><button class="uk-button uk-button-link uk-button-edit" data-id="${task.id}" uk-icon="icon: pencil;"></button></li>
                         <li><button class="uk-button uk-button-link uk-button-delete" uk-icon="icon: trash;"></button></li>
                     </ul>
                 </div>
@@ -55,7 +59,6 @@ taskForm.addEventListener('submit', async(e) => {
     // Resetear formulario y posicionar cursor.
     taskForm.reset()
     title.focus()
-
 
     console.log(title, description);
 })
