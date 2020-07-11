@@ -14,37 +14,38 @@ const saveTask = (title, description) =>
 
 // Obtener tareas.
 const getTask = () => db.collection('tasks').get();
-// Cargar contenido en la ventana.
+
+
+// Nota: Cuando carga el navegador, voy agregar un escucha " onGetTasks ", 
+// mostrara undato cada vez que cambie, que seran mostrados por el objeto " querySnapshot "
+// y comenzara a recorrerlo voy añadiendo los datos.
+const onGetTasks = (callback) => db.collection('tasks').onSnapshot(callback);
+
+// Cargar contenido en la ventana. DOMContentLoaded = Solo se muestra cuando carga la página.
 window.addEventListener('DOMContentLoaded', async(e) => {
-    // querySnapshot = Objeto a recorer.
-    const querySnapshot = await getTask()
-    querySnapshot.forEach(doc => {
-        // console.log(doc.data())
-        const task = doc.data();
+    // No duplicar contenido.
+    taskContainer.innerHTML = '';
+    // querySnapshot = Objeto a recorer. Sin contenedor onGetTasks
+    // const querySnapshot = await getTask();
+    onGetTasks((querySnapshot) => {
+        querySnapshot.forEach(doc => {
+            console.log(doc.data())
+            const task = doc.data()
 
-        // Crear propiedad id
-        task.id = doc.id;
-        // console.log(task)
-
-        taskContainer.innerHTML +=
-            `
-                <div class="uk-card uk-card-primary uk-card-body">
-                    <h3 class="uk-card-title">${task.title}</h3>
-                    <p>${task.description}</p>
-                    <ul class="uk-iconnav">
-                        <li><button class="uk-button uk-button-link uk-button-edit" data-id="${task.id}" uk-icon="icon: pencil;"></button></li>
-                        <li><button class="uk-button uk-button-link uk-button-delete" uk-icon="icon: trash;"></button></li>
-                    </ul>
-                </div>
-            `
-            // Elemento boton borrar
-        const buttonsDelete = document.querySelectorAll('.uk-button-delete')
-        buttonsDelete.forEach(uk => {
-            uk.addEventListener('click', (e) => {
-                console.log(e.target)
-            })
+            taskContainer.innerHTML +=
+                `
+                    <div class="uk-card uk-card-primary uk-card-body">
+                        <h3 class="uk-card-title">${task.title}</h3>
+                        <p>${task.description}</p>
+                        <ul class="uk-iconnav">
+                            <li><a href="#" class="uk-icon-link" uk-icon="icon: pencil;"></a></li>
+                            <li><a href="#" class="uk-icon-link" uk-icon="icon: trash;"></a></li>
+                        </ul>
+                    </div>
+                `
         })
     })
+
 })
 
 taskForm.addEventListener('submit', async(e) => {
@@ -59,6 +60,7 @@ taskForm.addEventListener('submit', async(e) => {
     // Resetear formulario y posicionar cursor.
     taskForm.reset()
     title.focus()
+
 
     console.log(title, description);
 })
