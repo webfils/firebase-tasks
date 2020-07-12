@@ -116,10 +116,16 @@ taskForm.addEventListener('submit', async(e) => {
         await saveTask(title.value, description.value);
     } else {
         // taskForm['button-task-form'].innerText = 'update';
+
+        // Acción de actualizar contenido.
         await updateTask(id, {
             title: title.value,
             description: description.value
-        })
+        });
+        // Boton vuelve al estado original
+        editStatus = false;
+        id = "";
+        taskForm['button-task-form'].innerText = 'Guardar'
     }
 
     // Resetear formulario y posicionar cursor.
