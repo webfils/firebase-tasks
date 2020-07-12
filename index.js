@@ -4,13 +4,17 @@ const db = firebase.firestore();
 const taskForm = document.getElementById('task-form');
 const taskContainer = document.getElementById('tasks-container');
 
+// Variable que almacena el estado de la aplicación
+let editStatus = false;
+let id = "";
+
 // Guardar tarea.
 const saveTask = (title, description) =>
     // Colección de tareas.
     db.collection('tasks').doc().set({
         title,
         description
-    })
+    });
 
 // Obtener tareas.
 const getTasks = () => db.collection('tasks').get();
@@ -19,6 +23,9 @@ const getTask = (id) => db.collection('tasks').doc(id).get();
 
 // Eliminar tarea.
 const deleteTask = id => db.collection('tasks').doc(id).delete();
+
+// Actualizar tarea.
+const updateTask = (id, updateTask) => db.collection('tasks').doc(id).update(updateTask);
 
 
 // Nota: Cuando carga el navegador, voy agregar un escucha " onGetTasks ", 
@@ -66,8 +73,8 @@ window.addEventListener('DOMContentLoaded', async(e) => {
                     // propiedad dataset = 
                     // console.log(e.target.dataset.id);
                     await deleteTask(e.target.dataset.id);
-                })
-            })
+                });
+            });
 
             // Acción Editar
             const buttonsEdit = document.querySelectorAll('.uk-button-edit');
@@ -75,14 +82,27 @@ window.addEventListener('DOMContentLoaded', async(e) => {
                 // Al hacer click consultamos los datos.
                 uk.addEventListener('click', async(e) => {
                     // console.log(e.target.dataset.id);
-                    const task = await getTask(e.target.dataset.id);
-                    console.log(task)
-                })
-            })
-        })
-    })
 
-})
+                    // Devuelve objeto de firebase.
+                    // const task = await getTask(e.target.dataset.id);
+                    const doc = await getTask(e.target.dataset.id);
+                    // console.log(doc.data());
+                    const task = doc.data()
+
+                    // Al activar el boton editar cambiara el status a true.
+                    editStatus = true;
+                    id = doc.id;
+
+                    // taskForm['task-title'].value = doc.data().title;
+                    taskForm['task-title'].value = task.title;
+                    taskForm['task-description'].value = task.description;
+
+                    taskForm['button-task-form'].innerText = 'update';
+                });
+            });
+        });
+    });
+});
 
 taskForm.addEventListener('submit', async(e) => {
     e.preventDefault()
@@ -91,11 +111,20 @@ taskForm.addEventListener('submit', async(e) => {
     const title = taskForm['task-title'];
     const description = taskForm['task-description'];
 
-    await saveTask(title.value, description.value)
+    // await saveTask(title.value, description.value);
+    if (!editStatus) {
+        await saveTask(title.value, description.value);
+    } else {
+        // taskForm['button-task-form'].innerText = 'update';
+        await updateTask(id, {
+            title: title.value,
+            description: description.value
+        })
+    }
 
     // Resetear formulario y posicionar cursor.
-    taskForm.reset()
-    title.focus()
+    taskForm.reset();
+    title.focus();
 
 
     console.log(title, description);
