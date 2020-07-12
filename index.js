@@ -13,7 +13,12 @@ const saveTask = (title, description) =>
     })
 
 // Obtener tareas.
-const getTask = () => db.collection('tasks').get();
+const getTasks = () => db.collection('tasks').get();
+// Obtener tarea (singular)
+const getTask = (id) => db.collection('tasks').doc(id).get();
+
+// Eliminar tarea.
+const deleteTask = id => db.collection('tasks').doc(id).delete();
 
 
 // Nota: Cuando carga el navegador, voy agregar un escucha " onGetTasks ", 
@@ -23,26 +28,57 @@ const onGetTasks = (callback) => db.collection('tasks').onSnapshot(callback);
 
 // Cargar contenido en la ventana. DOMContentLoaded = Solo se muestra cuando carga la página.
 window.addEventListener('DOMContentLoaded', async(e) => {
-    // No duplicar contenido.
-    taskContainer.innerHTML = '';
     // querySnapshot = Objeto a recorer. Sin contenedor onGetTasks
     // const querySnapshot = await getTask();
     onGetTasks((querySnapshot) => {
+        // No duplicar contenido.
+        taskContainer.innerHTML = '';
+
         querySnapshot.forEach(doc => {
-            console.log(doc.data())
-            const task = doc.data()
+            // console.log(doc.data())
+
+            const task = doc.data();
+            // Visualizar el id
+            task.id = doc.id;
+            // console.log(task);
 
             taskContainer.innerHTML +=
                 `
                     <div class="uk-card uk-card-primary uk-card-body">
-                        <h3 class="uk-card-title">${task.title}</h3>
-                        <p>${task.description}</p>
-                        <ul class="uk-iconnav">
-                            <li><a href="#" class="uk-icon-link" uk-icon="icon: pencil;"></a></li>
-                            <li><a href="#" class="uk-icon-link" uk-icon="icon: trash;"></a></li>
-                        </ul>
+                        <div>
+                            <h3 class="uk-card-title">${task.title}</h3>
+                            <p>${task.description}</p>
+                        </div>
+                        <div class="uk-flex uk-flex-between">
+                            <button type="submit" class="uk-button uk-button-default uk-button-small uk-button-edit" data-id="${task.id}">editar</button>
+                            <button type="submit" class="uk-button uk-button-default uk-button-small uk-button-delete" data-id="${task.id}">eliminar</button>
+                        </div>
                     </div>
                 `
+
+            // clicks de multiples elementos
+            // Acción borrar.
+            const buttonsDelete = document.querySelectorAll('.uk-button-delete');
+            // console.log(buttonsDelete);
+            buttonsDelete.forEach(uk => {
+                // Elemento al cual se le dio click.
+                uk.addEventListener('click', async(e) => {
+                    // propiedad dataset = 
+                    // console.log(e.target.dataset.id);
+                    await deleteTask(e.target.dataset.id);
+                })
+            })
+
+            // Acción Editar
+            const buttonsEdit = document.querySelectorAll('.uk-button-edit');
+            buttonsEdit.forEach(uk => {
+                // Al hacer click consultamos los datos.
+                uk.addEventListener('click', async(e) => {
+                    // console.log(e.target.dataset.id);
+                    const task = await getTask(e.target.dataset.id);
+                    console.log(task)
+                })
+            })
         })
     })
 
